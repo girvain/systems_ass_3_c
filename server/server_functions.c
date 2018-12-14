@@ -190,11 +190,13 @@ int print_file_sizes()
   return 0;
 }
 
-void file_filter(const struct dirent *dir) 
+int file_filter(const struct dirent *dir) 
 {
-	if (dir->d_name == '.') {
+	if (dir->d_name[0] != '.') {
 		return 1;
 	}
+	else
+		return 0;
 }
 /* a function to send all the file names appending in one char array with a 
  * \n as a seperator.
@@ -226,7 +228,7 @@ void send_file_names(int socket)
   char filelist[500] = "";
 
   // scan all the files in the uplaod directory
-  n = scandir("upload", &namelist, NULL, alphasort);
+  n = scandir("upload", &namelist, file_filter, alphasort);
   if (n < 0)
     perror("scandir");
   else
